@@ -1,9 +1,5 @@
-function App(): JSX.Element {
-  return (
-    <div>
-      Hello World
-    </div>
-  )
+const App = () => {
+  return <div>Hello world</div>
 }
 
 export default App

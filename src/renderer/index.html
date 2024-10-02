@@ -2,12 +2,24 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Electron</title>
-    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
-    <meta
+    <!-- Disallow inline scripts and eval(), making it more secure -->
+    <!-- <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:"
+    /> -->
+
+    <!-- Allows scripts to use inline code and eval() (less secure) but added because we want work with external library -->
+    <!-- 'unsafe-inline' and 'unsafe-eval' should be avoided whenever possible for security reasons -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-eval';"
     />
+
+    <!-- If you have specific external libraries that you need to allow, make sure to explicitly list them in your CSP -->
+    <!-- <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://stackpath.bootstrapcdn.com; img-src 'self' data:"
+    /> -->
   </head>
 
   <body>
