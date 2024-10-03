@@ -1,6 +1,7 @@
 export * from './AppLayout'
 export * from './Button'
 export * from './DraggableTopBar'
+export * from './FloatingNoteTilte'
 export * from './MarkDownEditor'
 export * from './NotePreview'
 export * from './NotePreviewList'
