@@ -8,8 +8,17 @@ function createWindow(): void {
   const mainWindow = new BrowserWindow({
     width: 900,
     height: 670,
+    minWidth: 900,
+    minHeight: 670,
     show: false,
     autoHideMenuBar: true,
+    center: true,
+    title: 'Notes',
+    frame: false,
+    vibrancy: 'under-window',
+    visualEffectState: 'active',
+    trafficLightPosition: { x: 15, y: 10 },
+    titleBarStyle: 'hidden',
     ...(process.platform === 'linux' ? { icon } : {}),
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
