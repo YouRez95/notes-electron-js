@@ -1,9 +1,9 @@
 import { electronApp, is, optimizer } from '@electron-toolkit/utils'
-import { GetNotes, ReadNotes, WriteNotes } from '@shared/types'
+import { CreateNotes, DeleteNotes, GetNotes, ReadNotes, WriteNotes } from '@shared/types'
 import { BrowserWindow, app, ipcMain, shell } from 'electron'
 import { join } from 'path'
 import icon from '../../resources/icon.png?asset'
-import { getNotes, readNotes, writeNotes } from './lib'
+import { createNotes, deleteNotes, getNotes, readNotes, writeNotes } from './lib'
 
 function createWindow(): void {
   // Create the browser window.
@@ -46,7 +46,7 @@ function createWindow(): void {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
 
-  mainWindow.webContents.openDevTools()
+  // mainWindow.webContents.openDevTools()
 }
 
 // This method will be called when Electron has finished
@@ -67,6 +67,8 @@ app.whenReady().then(() => {
   ipcMain.handle('getNotes', (_, ...args: Parameters<GetNotes>) => getNotes(...args))
   ipcMain.handle('readNotes', (_, ...args: Parameters<ReadNotes>) => readNotes(...args))
   ipcMain.handle('writeNotes', (_, ...args: Parameters<WriteNotes>) => writeNotes(...args))
+  ipcMain.handle('createNotes', (_, ...args: Parameters<CreateNotes>) => createNotes(...args))
+  ipcMain.handle('deleteNotes', (_, ...args: Parameters<DeleteNotes>) => deleteNotes(...args))
 
   createWindow()
 
