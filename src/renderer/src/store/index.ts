@@ -1,4 +1,4 @@
-import { NoteInfo } from '@shared/models'
+import { NoteContent, NoteInfo } from '@shared/models'
 import { atom } from 'jotai'
 import { unwrap } from 'jotai/utils'
 
@@ -10,11 +10,11 @@ const loadNotes = async () => {
 
 const noteAtomAsync = atom<NoteInfo[] | Promise<NoteInfo[]>>(loadNotes())
 
-export const notesAtom = unwrap(noteAtomAsync, (result) => result)
+export const notesAtom = unwrap(noteAtomAsync, (response) => response)
 
 export const selectedNoteIndexAtom = atom<number | null>(null)
 
-export const selectedNoteAtom = atom((get) => {
+const selectedNoteAtomAsync = atom(async (get) => {
   const notes = get(notesAtom)
   const selectedNoteIndex = get(selectedNoteIndexAtom)
 
@@ -22,11 +22,23 @@ export const selectedNoteAtom = atom((get) => {
 
   const selectedNote = notes[selectedNoteIndex]
 
+  const noteContent = await window.context.readNotes(selectedNote.title)
+
   return {
     ...selectedNote,
-    content: `Hello from Note ${selectedNoteIndex}`
+    content: noteContent
   }
 })
+
+export const selectedNoteAtom = unwrap(
+  selectedNoteAtomAsync,
+  (response) =>
+    response ?? {
+      title: '',
+      content: '',
+      lastEditTime: Date.now()
+    }
+)
 
 export const createNewEmptyNote = atom(null, (get, set) => {
   const notes = get(notesAtom) || []
@@ -52,4 +64,29 @@ export const deleteNoteAtom = atom(null, (get, set) => {
   )
 
   set(selectedNoteIndexAtom, null)
+})
+
+export const saveNoteAtom = atom(null, async (get, set, newContent: NoteContent) => {
+  const notes = get(notesAtom)
+  const selectedNote = get(selectedNoteAtom)
+
+  if (!notes || !selectedNote) return
+
+  // Save the note on disk
+  await window.context.writeNotes(selectedNote.title, newContent)
+
+  // Update the last edit time
+  set(
+    notesAtom,
+    notes.map((note) => {
+      if (note.title === selectedNote.title) {
+        return {
+          ...note,
+          lastEditTime: Date.now()
+        }
+      }
+
+      return note
+    })
+  )
 })
